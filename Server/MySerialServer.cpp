@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <chrono>
 #include <thread>
+#include <string.h>
 #include "ClientHandler.h"
 
 using namespace std;
@@ -37,6 +38,8 @@ void* server_side::MySerialServer::runSerialServer(void* arg)
     MySerialServer* mySerialServer = (MySerialServer*)arg;
     struct sockaddr_in serv_addr, cli_addr;
     int portno, clilen;
+    struct timeval      timeout;
+    fd_set              master_set, working_set;
     /* First call to socket() function */
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -69,6 +72,18 @@ void* server_side::MySerialServer::runSerialServer(void* arg)
     int newsockfd;
 
     while(true) {
+        FD_ZERO(&master_set);
+        FD_SET(sockfd, &master_set);
+
+        timeout.tv_sec  = 5;
+        timeout.tv_usec = 0;
+        memcpy(&working_set, &master_set, sizeof(master_set));
+
+        if (select(sockfd + 1, &working_set, NULL, NULL, &timeout) <= 0)
+        {
+            perror("ERROR on select");
+            exit(1);
+        }
         /* Accept actual connection from the client */
         newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
 
@@ -79,6 +94,7 @@ void* server_side::MySerialServer::runSerialServer(void* arg)
         mySerialServer->clientHandler->handleClient(newsockfd, newsockfd);
         close(newsockfd);
     }
+    close(sockfd);
 
     return NULL;
 

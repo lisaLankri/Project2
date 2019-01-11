@@ -15,6 +15,9 @@ namespace server_side {
         virtual bool isSolutionCashed(string*);
         virtual string* getSolution(string*);
         virtual void cache(string* p, string* s);
+
+    private:
+        string fileName;
     };
 }
 

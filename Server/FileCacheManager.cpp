@@ -1,6 +1,6 @@
 #include "FileCacheManager.h"
 
-server_side::FileCacheManager::FileCacheManager(string fileName)
+server_side::FileCacheManager::FileCacheManager(string _fileName) : fileName(_fileName)
 {
 
 }
