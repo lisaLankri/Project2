@@ -5,10 +5,11 @@
 #include "Server.h"
 
 namespace server_side {
-    class MyParellelServer  : public Server{
+    template<class Problem, class Solution>
+    class MyParellelServer  : public Server<Problem, Solution>{
     public:
         MyParellelServer();
-        void open(int portNo, ClientHandler*) override;
+        void open(int portNo, ClientHandler<Problem, Solution>**) override;
         void stop() override;
     };
 }

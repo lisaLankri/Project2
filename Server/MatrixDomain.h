@@ -7,6 +7,7 @@
 class Point
 {
 public:
+    Point() : x(0), y(0) {}
     Point(int _x, int _y) : x(_x), y(_y) {}
     Point(const Point& p) : x(p.x), y(p.y) {}
     Point& operator=(Point&& other)
@@ -30,6 +31,7 @@ std::ostream& operator<<(std::ostream& os, const Point& obj);
 class MatrixDomain : public Searchable<Point> {
 public:
     MatrixDomain(int** matrix, int size, int startx, int starty, int endx, int endy);
+    MatrixDomain(vector<string>& strings);
     ~MatrixDomain();
     virtual State<Point>* getInitialState();
     virtual State<Point>* getGoalState();

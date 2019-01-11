@@ -4,6 +4,7 @@
 namespace server_side {
     template<class Problem, class Solution>
     class CacheManager {
+    public:
         virtual bool isSolutionCashed(Problem*) = 0;
         virtual Solution* getSolution(Problem*) = 0;
         virtual void cache(Problem* p, Solution* s) = 0;

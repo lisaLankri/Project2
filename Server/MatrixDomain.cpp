@@ -6,6 +6,36 @@ MatrixDomain::MatrixDomain(int** _matrix, int _size,
 {
 }
 
+MatrixDomain::MatrixDomain(vector<string>& strings)
+{
+    matrix = new int*[strings.size() - 2];
+    for (int i = 0; i < strings.size() - 2; i++)
+    {
+        matrix[i] = new int[strings.size() - 2];
+        string str = strings[i];
+        // create new line
+        // Skip delimiters at beginning.
+        string::size_type lastPos = str.find_first_not_of(",", 0);
+
+        // Find first non-delimiter.
+        string::size_type pos = str.find_first_of(",", lastPos);
+        int j = 0;
+
+        while (string::npos != pos || string::npos != lastPos) {
+            // Found a token, add it to the vector.
+            matrix[i][j++] = std::stoi(str.substr(lastPos, pos - lastPos));
+
+            // Skip delimiters.
+            lastPos = str.find_first_not_of(",", pos);
+
+            // Find next non-delimiter.
+            pos = str.find_first_of(",", lastPos);
+        }
+    }
+    ////// update the start and end
+
+}
+
 MatrixDomain::~MatrixDomain()
 {
     for (int j = 0; j < size; j++)
