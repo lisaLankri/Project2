@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -15,7 +16,6 @@ int main()
 
     const char *server_hostname = "127.0.0.1";
     in_addr_t in_addr;
-    ssize_t user_input_len;
     struct hostent *hostent;
     /* This is the struct used by INet addresses. */
     struct sockaddr_in sockaddr_in;
@@ -50,33 +50,35 @@ int main()
     while (connect(sockfd, (struct sockaddr*)&sockaddr_in, sizeof(sockaddr_in)) == -1) {
         sleep(2);
     }
-    strcpy(output, "lisa");
-    if (write(sockfd, output, strlen(output)) == -1) {
+
+    ifstream fs("file.txt");
+    if (! fs.good())
+    {
+        cout << "bad" << endl;
+    }
+    else
+    {
+        cout << "good" << endl;
+    }
+std::string line;
+while (std::getline(fs, line))
+{
+    if (write(sockfd, line.c_str(), line.size()) == -1) {
                 //perror("write");
                 //break;
             }
+}
+    if (write(sockfd, "end", 3) == -1) {
+                //perror("write");
+                //break;
+            }
+
     if ((n = read(sockfd, input, BUFFER_SIZE)) == -1) {
                 //perror("write");
                 //break;
             }
 input[n] = '\0';
 std::cout<<input<<std::endl;
-    strcpy(output, "zvika");
-    if (write(sockfd, output, strlen(output)) == -1) {
-                //perror("write");
-                //break;
-            }
-    if ((n = read(sockfd, input, BUFFER_SIZE)) == -1) {
-                //perror("write");
-                //break;
-            }
-input[n] = '\0';
-std::cout<<input<<std::endl;
-    strcpy(output, "end");
-    if (write(sockfd, output, strlen(output)) == -1) {
-                //perror("write");
-                //break;
-            }
 close(sockfd);
 exit(0);
     while (1) {
