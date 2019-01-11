@@ -8,9 +8,9 @@ using namespace std;
 
 class EightPuzzle : public Searchable<string> {
 public:
-    virtual State<string> getInitialState();
-    virtual State<string> getGoalState();
-    virtual vector<State<string>> getAllPossibleStates(State<string>& s);
+    virtual State<string>* getInitialState();
+    virtual State<string>* getGoalState();
+    virtual vector<State<string>*> getAllPossibleStates(State<string>* s);
 };
 
 

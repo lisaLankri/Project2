@@ -1,6 +1,10 @@
 #ifndef SERVER_STATE_H
 #define SERVER_STATE_H
 
+#include <set>
+
+using namespace std;
+
 template<class T>
 class State {
 public:
@@ -36,7 +40,6 @@ public:
     }
     bool operator==(const State<T>& s) const
     {
-        bool b = state == s.state;
         return state == s.state;
     }
     const T& getState() const
@@ -57,6 +60,18 @@ template <class T>
 bool comparator(const State<T>& lhs, const State<T>& rhs)
 {
     return lhs.getState() > rhs.getState();
+}
+
+template <class T>
+typename set<State<T>*>::iterator find(std::set<State<T>*>& setOfStates, State<T>* s)
+{
+    for (typename set<State<T>*>::iterator it = setOfStates.begin();
+         it != setOfStates.end(); ++it)
+    {
+        if (*s == *(*it))
+            return it;
+    }
+    return setOfStates.end();
 }
 /*template <class T>
 struct MyHash
