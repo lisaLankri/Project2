@@ -3,43 +3,21 @@
 
 #include "Searchable.h"
 #include <iostream>
+#include "Point.h"
 
-class Point
-{
-public:
-    Point() : x(0), y(0) {}
-    Point(int _x, int _y) : x(_x), y(_y) {}
-    Point(const Point& p) : x(p.x), y(p.y) {}
-    Point& operator=(Point&& other)
-    {
-        x = other.x;
-        y = other.y;
-        return *this;
-    }
-    bool operator==(const Point& p) const
-    {
-        return (x == p.x) && (y == p.y);
-    }
-    int getX() const { return x;}
-    int getY() const { return y;}
-private:
-    int x, y;
-};
 
-std::ostream& operator<<(std::ostream& os, const Point& obj);
-
-class MatrixDomain : public Searchable<Point> {
+class MatrixDomain : public Searchable<string> {
 public:
     MatrixDomain(int** matrix, int size, int startx, int starty, int endx, int endy);
-    MatrixDomain(vector<string>& strings);
+    MatrixDomain(string& strings);
     ~MatrixDomain();
-    virtual State<Point>* getInitialState();
-    virtual State<Point>* getGoalState();
-    virtual vector<State<Point>*> getAllPossibleStates(State<Point>* p);
+    virtual State<string>* getInitialState();
+    virtual State<string>* getGoalState();
+    virtual vector<State<string>*> getAllPossibleStates(State<string>* p);
 
 private:
     int** matrix;
-    int size;
+    int sizex, sizey;
     Point start, end;
 };
 

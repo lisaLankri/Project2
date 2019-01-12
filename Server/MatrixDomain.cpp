@@ -1,106 +1,97 @@
 #include "MatrixDomain.h"
+#include "Utils.h"
 
 MatrixDomain::MatrixDomain(int** _matrix, int _size,
         int startx, int starty, int endx, int endy) :
-        matrix(_matrix), size(_size), start(startx, starty), end(endx, endy)
+        matrix(_matrix), sizex(_size), sizey(_size), start(startx, starty), end(endx, endy)
 {
 }
 
-MatrixDomain::MatrixDomain(vector<string>& strings)
+MatrixDomain::MatrixDomain(string& input)
 {
-    matrix = new int*[strings.size() - 2];
-    for (int i = 0; i < strings.size() - 2; i++)
+    vector<string> strings;
+    Utils::tokenize(input, strings, "$");
+    sizey = strings.size() - 2;
+    matrix = new int*[sizey];
+    sizex = 0;
+    for (int i = 0; i < sizey; i++)
     {
-        matrix[i] = new int[strings.size() - 2];
-        string str = strings[i];
-        // create new line
-        // Skip delimiters at beginning.
-        string::size_type lastPos = str.find_first_not_of(",", 0);
-
-        // Find first non-delimiter.
-        string::size_type pos = str.find_first_of(",", lastPos);
-        int j = 0;
-
-        while (string::npos != pos || string::npos != lastPos) {
-            // Found a token, add it to the vector.
-            matrix[i][j++] = std::stoi(str.substr(lastPos, pos - lastPos));
-
-            // Skip delimiters.
-            lastPos = str.find_first_not_of(",", pos);
-
-            // Find next non-delimiter.
-            pos = str.find_first_of(",", lastPos);
+        vector<string> numbers;
+        Utils::tokenize(strings[i], numbers, ",");
+        if (sizex == 0)
+            sizex = numbers.size();
+        matrix[i] = new int[sizex];
+        for (int j = 0; j < sizex; j++)
+        {
+            matrix[i][j] = std::stoi(numbers[j]);
         }
     }
-    ////// update the start and end
-
+    // update the start and end
+    start = Point::fromString(strings[strings.size() - 2]);
+    end = Point::fromString(strings[strings.size() - 1]);
 }
 
 MatrixDomain::~MatrixDomain()
 {
-    for (int j = 0; j < size; j++)
+    for (int j = 0; j < sizey; j++)
     {
         delete[] matrix[j];
     }
     delete[] matrix;
 }
 
-State<Point>* MatrixDomain::getInitialState()
+State<string>* MatrixDomain::getInitialState()
 {
-    State<Point>* initialState = new State<Point>(Point(start));
+    State<string>* initialState = new State<string>(start.toString());
     initialState->setCost(matrix[start.getX()][start.getY()]);
     return initialState;
 }
 
-State<Point>* MatrixDomain::getGoalState()
+State<string>* MatrixDomain::getGoalState()
 {
-    State<Point>* endState = new State<Point>(Point(end));
+    State<string>* endState = new State<string>(end.toString());
     endState->setCost(matrix[end.getX()][end.getY()]);
     return endState;
 }
 
 #define INFINITE -1
 
-vector<State<Point>*> MatrixDomain::getAllPossibleStates(State<Point>* p)
+vector<State<string>*> MatrixDomain::getAllPossibleStates(State<string>* s)
 {
-    vector<State<Point>*> possibleStates;
-    int x = p->getState().getX();
-    int y = p->getState().getY();
-    State<Point>* newState;
+    Point p = Point::fromString(s->getState());
+    vector<State<string>*> possibleStates;
+    int x = p.getX();
+    int y = p.getY();
+    State<string>* newState;
     if ((x > 0) && (matrix[x - 1][y] != INFINITE))
     {
-        newState = new State<Point>(Point(x - 1, y));
-        newState->setCost(p->getCost() + matrix[x - 1][y]);
+        newState = new State<string>(Point(x - 1, y).toString());
+        newState->setCost(s->getCost() + matrix[x - 1][y]);
         possibleStates.push_back(newState);
     }
     if ((y > 0) && (matrix[x][y - 1] != INFINITE))
     {
-        newState = new State<Point>(Point(x, y - 1));
-        newState->setCost(p->getCost() + matrix[x][y - 1]);
+        newState = new State<string>(Point(x, y - 1).toString());
+        newState->setCost(s->getCost() + matrix[x][y - 1]);
         possibleStates.push_back(newState);
     }
-    if ((x < size - 1) && (matrix[x + 1][y] != INFINITE))
+    if ((x < sizex - 1) && (matrix[x + 1][y] != INFINITE))
     {
-        newState = new State<Point>(Point(x + 1, y));
-        newState->setCost(p->getCost() + matrix[x + 1][y]);
+        newState = new State<string>(Point(x + 1, y).toString());
+        newState->setCost(s->getCost() + matrix[x + 1][y]);
         possibleStates.push_back(newState);
     }
-    if ((y < size - 1) && (matrix[x][y + 1] != INFINITE))
+    if ((y < sizey - 1) && (matrix[x][y + 1] != INFINITE))
     {
-        newState = new State<Point>(Point(x, y + 1));
-        newState->setCost(p->getCost() + matrix[x][y + 1]);
+        newState = new State<string>(Point(x, y + 1).toString());
+        newState->setCost(s->getCost() + matrix[x][y + 1]);
         possibleStates.push_back(newState);
     }
-    for (vector<State<Point>*>::iterator it = possibleStates.begin();
+    for (vector<State<string>*>::iterator it = possibleStates.begin();
          it != possibleStates.end(); ++it)
     {
-        (*it)->setCameFrom(p);
+        (*it)->setCameFrom(s);
     }
     return possibleStates;
 }
 
-std::ostream& operator<<(std::ostream& os, const Point& obj)
-{
-    os << obj.getX() << "," << obj.getY();
-    return os;
-}

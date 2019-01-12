@@ -18,20 +18,19 @@
 #include <thread>
 #include <string.h>
 #include "ClientHandler.h"
+#include "Utils.h"
 
 using namespace std;
-
-#define BUFFER_SIZE 1024
 
 namespace server_side {
     template<class Problem, class Solution>
     class MySerialServer  : public Server<Problem, Solution>{
     public:
         MySerialServer() {}
-        void open(int portNo, ClientHandler<Problem, Solution>*) override
+        void open(int portNo, ClientHandler<Problem, Solution>* _clientHandler) override
         {
             this->portNo = portNo;
-            this->clientHandler = clientHandler;
+            this->clientHandler = _clientHandler;
             pthread_create(&serverThread, nullptr, runSerialServer, this);
         }
 
@@ -73,23 +72,26 @@ namespace server_side {
                * go in sleep mode and will wait for the incoming connection
             */
 
-            ////////////////// need to set time out
             listen(sockfd, 5);
             clilen = sizeof(cli_addr);
             int newsockfd;
+            bool firstTime = true;
 
             while(true) {
                 FD_ZERO(&master_set);
                 FD_SET(sockfd, &master_set);
 
-                timeout.tv_sec  = 5;
+                timeout.tv_sec  = 1;
                 timeout.tv_usec = 0;
                 memcpy(&working_set, &master_set, sizeof(master_set));
 
-                if (select(sockfd + 1, &working_set, NULL, NULL, &timeout) <= 0)
+                struct timeval* realTimeout = firstTime ? NULL : &timeout;
+                firstTime = false;
+                if (select(sockfd + 1, &working_set, NULL, NULL, realTimeout) <= 0)
                 {
-                    perror("ERROR on select");
-                    exit(1);
+                    //perror("ERROR on select");
+                    break;
+                    //exit(1);
                 }
                 /* Accept actual connection from the client */
                 newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
