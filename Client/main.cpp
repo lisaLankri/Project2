@@ -67,18 +67,27 @@ while (std::getline(fs, line))
                 //perror("write");
                 //break;
             }
+    if (write(sockfd, " $ ", 3) == -1) {
+                //perror("write");
+                //break;
+            }
+//fsync(sockfd); // flush the output
+//usleep(100);
+//flush(&sockfd);
+cout << "line: " << line << endl;
 }
     if (write(sockfd, "end", 3) == -1) {
                 //perror("write");
                 //break;
             }
-
+cout << "line: end" << endl;
+fsync(sockfd); // flush the output
     if ((n = read(sockfd, input, BUFFER_SIZE)) == -1) {
                 //perror("write");
                 //break;
             }
 input[n] = '\0';
-std::cout<<input<<std::endl;
+std::cout<<"input: " << input<<std::endl;
 close(sockfd);
 exit(0);
     while (1) {
