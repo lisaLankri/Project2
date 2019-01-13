@@ -2,6 +2,7 @@
 #define SERVER_ASTAR_H
 
 #include "Searcher.h"
+#include "AutoDeleteVector.h"
 #include <vector>
 
 using namespace std;
@@ -11,9 +12,13 @@ class AStar : public Searcher<T> {
 public:
     virtual Solution<T>* search (Searchable<T>& searchable)
     {
-        Searcher<T>::addToOpenList(searchable.getInitialState());
+        AutoDeleteVector<State<T>*> allStates;
         std::set<State<T>*> closed;
+        State<T>* initialState = searchable.getInitialState();
         State<T>* goal = searchable.getGoalState();
+        allStates.push_back(initialState);
+        allStates.push_back(goal);
+        Searcher<T>::addToOpenList(initialState);
         while(Searcher<T>::getOpenListSize() > 0) {
             State<T>* n = Searcher<T>::popOpenList();
             closed.insert(n);
@@ -23,25 +28,23 @@ public:
                 return this->backTrace(n);
             }
             vector<State<T>*> succerssors = searchable.getAllPossibleStates(n);
-            int minCost = -1;
-            State<T>* minCostState = nullptr;
+            allStates.insert(allStates.end(), succerssors.begin(), succerssors.end());
             for (typename vector<State<T>*>::iterator it = succerssors.begin();
                  it != succerssors.end(); ++it)
             {
-                typename set<State<T>*>::iterator a = find(closed, (*it));
-                if(a == closed.end())
+                if (Searcher<T>::openContains(*it))
                 {
-                    if ((minCostState == nullptr) || (minCost > (*it)->getCost()))
+                    State<T>* state = *Searcher<T>::getState(*it);
+                    if ((state != nullptr) && (state->getCost() < (*it)->getCost()))
                     {
-                        minCostState = (*it);
-                        minCost = minCost > (*it)->getCost();
+                        state->setCost((*it)->getCost());
+                        state->setCameFrom((*it)->getCameFrom());
                     }
                 }
-            }
-            if (minCostState != nullptr)
-            {
-                Searcher<T>::addToOpenList(minCostState);
-                closed.insert(minCostState);
+                else
+                {
+                    Searcher<T>::addToOpenList(*it);
+                }
             }
 
         }

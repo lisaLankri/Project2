@@ -2,18 +2,26 @@
 #define SERVER_BESTFIRSTSEARCH_H
 
 #include "Searcher.h"
+#include "AutoDeleteVector.h"
 #include <stdio.h>
 #include <set>
 #include <iostream>
+#include <list>
+
+using namespace std;
 
 template <class T>
 class BestFirstSearch : public Searcher<T> {
 public:
     virtual Solution<T>* search (Searchable<T>& searchable)
     {
-        Searcher<T>::addToOpenList(searchable.getInitialState());
+        AutoDeleteVector<State<T>*> allStates;
         std::set<State<T>*> closed;
+        State<T>* initialState = searchable.getInitialState();
         State<T>* goal = searchable.getGoalState();
+        Searcher<T>::addToOpenList(initialState);
+        allStates.push_back(initialState);
+        allStates.push_back(goal);
         while(Searcher<T>::getOpenListSize() > 0) {
             State<T>* n = Searcher<T>::popOpenList();
             closed.insert(n);
@@ -23,6 +31,7 @@ public:
                 return this->backTrace(n);
             }
             vector<State<T>*> succerssors = searchable.getAllPossibleStates(n);
+            allStates.insert(allStates.end(), succerssors.begin(), succerssors.end());
             for (typename vector<State<T>*>::iterator it = succerssors.begin();
                 it != succerssors.end(); ++it)
             {

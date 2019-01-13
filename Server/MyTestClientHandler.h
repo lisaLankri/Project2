@@ -42,7 +42,7 @@ public:
                 break;
             }
             buffer[n] = '\0';
-            cout << "buffer: " << buffer << endl;
+            //cout << "buffer: " << buffer << endl;
             if ((strlen(buffer) >= 3) && strcmp(&buffer[strlen(buffer) - 3], "end") == 0) // finish
             {
                 buffer[strlen(buffer) - 3] = '\0';

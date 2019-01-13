@@ -9,10 +9,6 @@ template<class T>
 class State {
 public:
     State(T _state) : state(_state), cameFrom(nullptr) {}
-    /*bool Equals(State<T> s)
-    {
-        return state.Equals(s.state);
-    }*/
 
     State<T>* getCameFrom()
     {

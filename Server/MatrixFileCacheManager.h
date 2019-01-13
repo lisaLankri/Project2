@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "CacheManager.h"
 #include "Point.h"
 
@@ -19,6 +20,7 @@ namespace server_side {
 
     private:
         string fileName;
+        map<string, vector<string>> solutions;
     };
 }
 

@@ -14,11 +14,11 @@ namespace server_side {
     public:
         virtual vector<string>* solve(string* problem)
         {
-            //DFS<string> dfs;
+            DFS<string> bfs;
             MatrixDomain md(*problem);
             //BestFirstSearch<string> bfs;
             //AStar<string> bfs;
-            BFS<string> bfs;
+            //BFS<string> bfs;
             vector<string>* solution = bfs.search(md);
             if (solution == nullptr)
                 return nullptr;

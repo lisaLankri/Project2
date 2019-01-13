@@ -2,6 +2,7 @@
 #define SERVER_BFS_H
 
 #include "Searcher.h"
+#include "AutoDeleteVector.h"
 #include <stack>
 #include <set>
 
@@ -13,10 +14,14 @@ class BFS : public Searcher<T> {
 public:
     virtual Solution<T>* search (Searchable<T>& searchable)
     {
+        AutoDeleteVector<State<T>*> allStates;
         stack<State<T>*> s;
         std::set<State<T>*> closed;
+        State<T>* initialState = searchable.getInitialState();
         State<T>* goal = searchable.getGoalState();
-        s.push(searchable.getInitialState());
+        s.push(initialState);
+        allStates.push_back(initialState);
+        allStates.push_back(goal);
         Searcher<T>::evaluatedNodes++;
         while(s.size() != 0)
         {
@@ -31,6 +36,7 @@ public:
             {
                 closed.insert(v);
                 vector<State<T>*> succerssors = searchable.getAllPossibleStates(v);
+                allStates.insert(allStates.end(), succerssors.begin(), succerssors.end());
                 for (typename vector<State<T>*>::iterator it = succerssors.begin();
                      it != succerssors.end(); ++it)
                 {

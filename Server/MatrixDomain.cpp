@@ -19,7 +19,9 @@ MatrixDomain::MatrixDomain(string& input)
         vector<string> numbers;
         Utils::tokenize(strings[i], numbers, ",");
         if (sizex == 0)
+        {
             sizex = numbers.size();
+        }
         matrix[i] = new int[sizex];
         for (int j = 0; j < sizex; j++)
         {

@@ -20,6 +20,7 @@
 #include <string.h>
 #include "ClientHandler.h"
 #include "Utils.h"
+#include "AutoDeleteVector.h"
 
 using namespace std;
 
@@ -45,6 +46,11 @@ namespace server_side {
         void stop() override
         {
             pthread_join(serverThread, NULL);
+            for (list<pthread_t*>::iterator it = threads.begin();
+                 it != threads.end(); ++it)
+            {
+                pthread_join(*(*it), NULL);
+            }
         }
     private:
         static void* runOneClient(void* arg)
@@ -53,6 +59,7 @@ namespace server_side {
                     (MyParellelServerInfo<Problem, Solution>*)arg;
             serverInfo->clientHandler->handleClient(serverInfo->sockfd, serverInfo->sockfd);
             close(serverInfo->sockfd);
+            delete serverInfo;
         }
         static void* runParellelServer(void* arg)
         {
@@ -129,7 +136,7 @@ namespace server_side {
         pthread_t serverThread;
         int portNo;
         ClientHandler<Problem, Solution>* clientHandler;
-        vector<pthread_t*> threads;
+        AutoDeleteVector<pthread_t*> threads;
     };
 }
 

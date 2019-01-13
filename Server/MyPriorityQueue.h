@@ -14,10 +14,20 @@ public:
         auto first = this->c.begin();
         auto last = this->c.end();
         while (first!=last) {
-            if (*first==t1) return true;
+            if (**first==*t1) return true;
             ++first;
         }
         return false;
+    }
+    typename T2::iterator find(const T1& t1)
+    {
+        auto first = this->c.begin();
+        auto last = this->c.end();
+        while (first!=last) {
+            if (**first==*t1) return first;
+            ++first;
+        }
+        return last;
     }
 
 };

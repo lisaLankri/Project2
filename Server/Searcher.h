@@ -64,6 +64,10 @@ protected:
         cost = _cost;
     }
 
+    typename std::vector<State<T>*>::iterator getState(State<T>* s)
+    {
+        return openList.find(s);
+    }
 protected:
     int evaluatedNodes;
 private:
