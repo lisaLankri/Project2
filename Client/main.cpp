@@ -11,8 +11,13 @@ using namespace std;
 
 #define BUFFER_SIZE 1024
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc != 2)
+    {
+        cout << "Usage: a.out matrixfilename";
+        return 0;
+    }
 
     const char *server_hostname = "127.0.0.1";
     in_addr_t in_addr;
@@ -42,7 +47,7 @@ int main()
     sockaddr_in.sin_family = AF_INET;
     sockaddr_in.sin_port = htons(server_port);
 
-    char input[BUFFER_SIZE], output[BUFFER_SIZE];
+    char input[BUFFER_SIZE];
     int n;
 
 
@@ -51,7 +56,7 @@ int main()
         sleep(2);
     }
 
-    ifstream fs("file.txt");
+    ifstream fs(argv[1]);
     if (! fs.good())
     {
         cout << "bad" << endl;
