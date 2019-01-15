@@ -4,7 +4,6 @@
 
 server_side::MatrixFileCacheManager::MatrixFileCacheManager(string _fileName) : fileName(_fileName)
 {
-    return;/////////////
     string key;
     vector<string> value;
     std::string line;
@@ -35,13 +34,11 @@ server_side::MatrixFileCacheManager::~MatrixFileCacheManager()
 
 bool server_side::MatrixFileCacheManager::isSolutionCashed(string* s)
 {
-    return false;//////
     return solutions.find(*s) != solutions.end() ;
 }
 
 vector<string>* server_side::MatrixFileCacheManager::getSolution(string* s)
 {
-    return nullptr;/////
     vector<string> value = solutions[*s];
     vector<string>* answer = new vector<string>;
     answer->insert(answer->end(), value.begin(), value.end());
@@ -50,7 +47,6 @@ vector<string>* server_side::MatrixFileCacheManager::getSolution(string* s)
 
 void server_side::MatrixFileCacheManager::cache(string* p, vector<string>* s)
 {
-    return;//////////////
     solutions[*p] = *s;
     ofstream fs;
     fs.open ("cache.txt", std::ofstream::out | std::ofstream::app);

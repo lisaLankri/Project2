@@ -2,6 +2,7 @@
 #define SERVER_MYPRIORITYQUEUE_H
 
 #include <queue>
+#include <vector>
 
 using namespace std;
 

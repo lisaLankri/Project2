@@ -3,6 +3,7 @@
 
 #include <string>
 #include "CacheManager.h"
+#include <map>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ namespace server_side {
 
     private:
         string fileName;
+        map<string, string> solutions;
     };
 }
 

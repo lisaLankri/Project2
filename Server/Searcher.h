@@ -15,7 +15,7 @@ public:
     Searcher()
     {
         evaluatedNodes = 0;
-        cost == 0;
+        cost = 0;
     }
     int getOpenListSize()
     {

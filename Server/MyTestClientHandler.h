@@ -14,10 +14,9 @@
 #include "FileCacheManager.h"
 #include "StringReverser.h"
 #include "Point.h"
+#include "Utils.h"
 #include <vector>
 #include <iostream>
-
-#define BUFFER_SIZE 1024
 
 using namespace std;
 
@@ -28,14 +27,13 @@ public:
                         server_side::ClientHandler<string, vector<string>>(_solver, _cm) {}
     virtual void handleClient(int inputPort, int outputPort)
     {
-        ///////////// implement
         char buffer[BUFFER_SIZE];
         vector<string> strings;
         int n;
         bool error = false;
         bool finish = false;
         while (! finish) {
-            n = read(inputPort, buffer, BUFFER_SIZE);
+            n = read(inputPort, buffer, BUFFER_SIZE - 1);
             if (n < 0)
             {
                 error = true;
@@ -51,7 +49,7 @@ public:
                 finish = true;
             }
             string problem = buffer;
-            if (problem[problem.size() - 1] == '\r')
+            if (problem[problem.size() - 5] == '\r')
                 problem = problem.substr(0, problem.size() - 1);
             strings.push_back(problem);
         }

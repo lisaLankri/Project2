@@ -48,8 +48,14 @@ public:
                             Searcher<T>::addToOpenList(*it);
                         } else {
                             typename set<State<T>*>::iterator b = find(closed, (*it)->getCameFrom());
-                            ((State<T>*)(*a))->setCost((*it)->getCost());
-                            ((State<T>*)(*a))->setCameFrom((State<T>*)(&(*b)));
+                            if (b != closed.end())
+                            {
+                                if ((*b) != (*a)->getCameFrom()) // avoid loops
+                                {
+                                    ((State<T> *) (*a))->setCost((*it)->getCost());
+                                    ((State<T> *) (*a))->setCameFrom(*b);
+                                }
+                            }
                         }
                     }
 
